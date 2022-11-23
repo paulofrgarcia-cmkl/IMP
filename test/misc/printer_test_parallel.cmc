@@ -1,0 +1,108 @@
+core cpu0
+{
+    i32 times_triggered;
+
+    // MAIN core
+    main
+    {
+        sigen;
+        times_triggered = 0;
+
+        // prints Main_Core_Initialized;
+        while (1 == 1)
+        {
+            // counter = counter + 1;
+            prints cpu0_waiting;
+        };
+    }
+    
+    signal
+    {
+        match source
+        {
+            cpu0:
+            {
+                prints uh_oh;
+            }
+            cpu1:
+            {
+                // prints cpu0_triggered;
+                times_triggered = times_triggered + 1;
+                coreprint(times_triggered).cpu2;
+            }
+            cpu2:
+            {
+                halt;
+            }
+        };
+    }
+}
+
+core cpu1
+{
+    // TIMER core
+
+    i32 counter;
+    i32 trigger_time;
+    i32 num_triggers;
+    i32 max_triggers;
+    // Continuously count up until reaching a threshold, then trigger MAIN core
+    main
+    {
+        max_triggers = 5;
+        num_triggers = 0;
+        trigger_time = 15;
+        counter = 0;
+
+        // prints Timer_Core_Initialized;
+
+        while (num_triggers < max_triggers)
+        {
+            while (counter < trigger_time)
+            {
+                counter = counter + 1;
+            };
+            // prints cpu1_triggering_cpu0;
+            trigger cpu0;
+            counter = 0;
+            num_triggers = num_triggers + 1;
+        };
+        trigger cpu2;
+        halt;
+    }
+}
+
+core cpu2
+{
+    // PRINTER core
+
+    main
+    {
+        sigen;
+        i32 counter;
+        i32 dead;
+
+        // prints Print_Core_Initialized;
+        while (1 == 1)
+        {
+            counter = counter + 1;
+        };
+    }
+
+    stream coreprint(i32 val) -> write(i32 nada)
+    {
+        print val;
+    }
+
+    signal
+    {
+        match source
+        {
+            cpu1:
+            {
+                trigger cpu0;
+                halt;
+            }
+        };
+    }
+}

@@ -1,0 +1,157 @@
+core cpu0
+{
+    // coordinator + factorial core
+
+    main
+    {
+        i32 curr_num;
+        i32 max_num;
+        i32 curr_root;
+        i32 curr_hash;
+        i32 curr_fact;
+        i32 curr_approx;
+
+
+        curr_num = 1;
+        max_num = 49;
+
+        while(curr_num < max_num)
+        {
+            print curr_num;
+
+            factorial(curr_num).cpu1;
+            //hash(curr_num).cpu2;
+            sqrt(curr_num).cpu2;
+
+            // INTEGER SQUARE ROOT
+            //curr_root = 0;
+            //curr_approx = 0;
+            //while (curr_approx <= curr_num)
+            //{
+            //    curr_root = curr_root + 1;
+            //    curr_approx = (curr_root+1) * (curr_root+1);
+            //};
+
+            // PSEUDO HASH
+            curr_hash = curr_num;
+            curr_hash = curr_hash * curr_hash * curr_hash * curr_hash;
+            curr_hash = curr_hash * 2 * 2 * 2;
+            curr_hash = curr_hash * curr_hash * curr_hash * curr_hash;
+
+            curr_root = cpu2.result(root);
+            //curr_hash = cpu2.result(hashed);
+            curr_fact = cpu1.result(fact);
+
+            prints root_is;
+            print curr_root;
+            prints hash_is;
+            print curr_hash;
+            prints fact_is;
+            print curr_fact;
+
+            curr_num = curr_num + 1;
+        };
+        trigger cpu1;
+        trigger cpu2;
+        halt;
+    }
+
+    // integer square root
+    // using linear search
+    stream sqrt(i32 num) -> result(i32 root)
+    {
+        root = 0;
+        i32 curr_approx;
+        curr_approx = 0;
+        while (curr_approx <= num)
+        {
+            root = root + 1;
+            curr_approx = (root+1) * (root+1);
+        };
+    }
+}
+
+core cpu1
+{
+    main
+    {
+        sigen;
+        while (1 == 1)
+        {
+            nop;
+        };
+    }
+
+
+
+    stream factorial(i32 base) -> result(i32 fact)
+    {
+        i32 ctr_i;
+        fact = 1;
+        ctr_i = 1;
+
+        while(ctr_i <= base)
+        {
+            fact = fact * ctr_i;
+            ctr_i = ctr_i + 1;
+        };
+    }
+
+    signal
+    {
+        match source
+        {
+            cpu0:
+            {
+                halt;
+            }
+        };
+    }
+}
+
+core cpu2
+{
+    main
+    {
+        sigen;
+        while (1 == 1)
+        {
+            nop;
+        };
+    }
+
+    // pseudo-hash
+    stream hash(i32 num) -> result(i32 hashed)
+    {
+        hashed = num;
+        hashed = hashed * hashed * hashed * hashed;
+        hashed = hashed * 2 * 2 * 2;
+        hashed = hashed * hashed * hashed * hashed;
+    }
+
+    signal
+    {
+        match source
+        {
+            cpu0:
+            {
+                halt;
+            }
+        };
+    }
+
+    // integer square root
+    // using linear search
+    stream sqrt(i32 num) -> result(i32 root)
+    {
+        root = 0;
+        i32 curr_approx;
+        curr_approx = 0;
+        while (curr_approx <= num)
+        {
+            root = root + 1;
+            curr_approx = (root+1) * (root+1);
+        };
+    }
+
+}

@@ -1,0 +1,17 @@
+core cpu0
+{
+    main
+    {
+        i32 counter;
+        i32 max;
+
+        counter = 0;
+        max = 20;
+
+        while(counter < max)
+        {
+            counter = counter + 1;
+        };
+        halt;
+    }
+}

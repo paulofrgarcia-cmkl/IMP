@@ -1,0 +1,37 @@
+// Compute and print the factorials of 1 through 12
+core cpu0
+{
+    // MAIN core
+    
+    i32 curr_base;
+    i32 max_base;
+    i32 fact;
+
+    i32 ctr_i;
+
+    main
+    {
+        fact = 1;
+        curr_base = 1;
+        max_base = 12;
+
+        // prints Main_Core_Initialized;
+
+        while (curr_base <= max_base)
+        {
+            // calculate factorial of curr_base
+            ctr_i = 1;
+            while (ctr_i <= curr_base)
+            {
+                fact = fact * ctr_i;
+                ctr_i = ctr_i + 1;
+            };
+            print fact;
+
+            fact = 1;
+            ctr_i = 0;
+            curr_base = curr_base + 1;
+        };
+        halt;        
+    }
+}

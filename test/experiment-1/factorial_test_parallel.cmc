@@ -1,0 +1,104 @@
+// Compute and print the factorials of 1 through 12, exploiting parallelism
+
+core cpu0
+{
+    // HOST core
+
+    i32 max_base;
+    i32 curr_base;
+
+    i32 res1;
+    i32 res2;
+
+    main
+    {
+        curr_base = 1;
+        max_base = 12;
+
+        while (curr_base < max_base)
+        {
+            factorial(curr_base).cpu1;
+            factorial(curr_base+1).cpu2;
+            res1 = cpu1.result(fact);
+            res2 = cpu2.result(fact);
+            print res1;
+            print res2;
+            curr_base = curr_base + 2;
+        };
+
+        trigger cpu1;
+        trigger cpu2;
+    }   
+}
+
+core cpu1
+{
+    main
+    {
+        sigen;
+        while (1 == 1)
+        {
+            nop;
+        };
+    }
+
+    stream factorial(i32 base) -> result(i32 fact)
+    {
+        i32 ctr_i;
+        fact = 1;
+        ctr_i = 1;
+
+        while(ctr_i <= base)
+        {
+            fact = fact * ctr_i;
+            ctr_i = ctr_i + 1;
+        };
+    }
+
+    signal
+    {
+        match source
+        {
+            cpu0:
+            {
+                halt;
+            }
+        };
+    }
+}
+
+core cpu2
+{
+    main
+    {
+        sigen;
+        while (1 == 1)
+        {
+            nop;
+        };
+    }
+
+    stream factorial(i32 base) -> result(i32 fact)
+    {
+        i32 ctr_i;
+        fact = 1;
+        ctr_i = 1;
+
+        while(ctr_i <= base)
+        {
+            fact = fact * ctr_i;
+            ctr_i = ctr_i + 1;
+        };
+    }
+
+    signal
+    {
+        match source
+        {
+            cpu0:
+            {
+                halt;
+            }
+        };
+    }
+}

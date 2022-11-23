@@ -1,0 +1,86 @@
+core cpu0
+{
+	i32 counter;
+	main
+	{
+		i32 x;
+		i32 foo;
+		i32 y;
+		i32 p;
+		i32 q;
+		i32 bar;
+		
+		x = 1;
+		y = x;
+		if(2)
+		{
+			trigger cpu1;
+			read(12).cpu0;
+			x = cpu0.value(result);
+		}
+		else
+		{
+			x = 3;
+			while(5)
+			{
+				x = x - 1;
+				match source
+				{
+					cpu0: 
+					{
+						foo = 27;
+					}
+					cpu1: 
+					{
+						foo = 3;
+					}
+				};
+			};
+		};
+	}
+
+	stream read(i32 index) -> value(i32 result)
+	{
+		result = index + 2;
+	}
+
+
+	signal
+	{
+		i32 y;
+		match source
+		{
+			cpu0: 
+			{
+				nop;
+			}
+		};
+	}
+}
+
+core cpu1
+{
+
+	signal
+	{
+		match source
+		{
+			cpu0: 
+			{
+				nop;
+			}
+		};
+	}
+
+	main
+	{
+		sigen;
+		x = 0;
+        i32 main_cycles;
+        main_cycles = 0;
+        while(main_cycles < 20)
+        {
+            main_cycles = main_cycles + 1;
+        };
+	}
+}

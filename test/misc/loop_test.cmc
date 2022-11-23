@@ -1,0 +1,68 @@
+core cpu0
+{
+    i32 counter;
+    main
+    {
+        i32 foo;
+        foo = 10;
+        counter = 1;
+        while (counter < 5)
+        {
+            foo = foo - 1;
+            counter = counter + 1;
+        };
+        trigger cpu1;
+    }
+}
+
+core cpu1
+{
+    i32 x;
+    main
+    {
+        x = 0;
+        i32 main_cycles;
+        main_cycles = 0;
+        sigen;
+        nop;
+        nop;
+        nop;
+        while(main_cycles < 20)
+        {
+            main_cycles = main_cycles + 1;
+        };
+    }
+    
+    signal
+    {
+        match source
+		{
+			cpu0: 
+			{
+				x = x + 1;
+			}
+            cpu2:
+            {
+                x = x - 1;
+            }
+		};
+        
+    }
+}
+
+core cpu2
+{
+    i32 counter;
+    main
+    {
+        i32 foo;
+        foo = 10;
+        counter = 1;
+        while (counter < 10)
+        {
+            foo = foo - 1;
+            counter = counter + 1;
+        };
+        trigger cpu1;
+    }
+}

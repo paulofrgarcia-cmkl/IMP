@@ -1,0 +1,60 @@
+core cpu0
+{
+
+    main
+    {
+        i32 curr_num;
+        i32 max_num;
+        i32 curr_root;
+        i32 curr_hash;
+        i32 curr_fact;
+        i32 curr_approx;
+        i32 ctr_i;
+
+
+
+        curr_num = 1;
+        max_num = 49;
+
+        while(curr_num < max_num)
+        {
+            print curr_num;
+
+            // INTEGER SQUARE ROOT
+            curr_root = 0;
+            curr_approx = 0;
+            while (curr_approx <= curr_num)
+            {
+                curr_root = curr_root + 1;
+                curr_approx = (curr_root+1) * (curr_root+1);
+            };
+
+            // PSEUDO HASH
+            curr_hash = curr_num;
+            curr_hash = curr_hash * curr_hash * curr_hash * curr_hash;
+            curr_hash = curr_hash * 2 * 2 * 2;
+            curr_hash = curr_hash * curr_hash * curr_hash * curr_hash;
+
+            // FACTORIAL
+            curr_fact = 1;
+            ctr_i = 1;
+
+            while(ctr_i <= curr_num)
+            {
+                curr_fact = curr_fact * ctr_i;
+                ctr_i = ctr_i + 1;
+            };
+                
+            prints root_is;
+            print curr_root;
+            prints hash_is;
+            print curr_hash;
+            prints fact_is;
+            print curr_fact;
+
+            curr_num = curr_num + 1;
+        };
+
+        halt;
+    }
+}

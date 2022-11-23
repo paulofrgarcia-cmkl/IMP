@@ -1,0 +1,190 @@
+module/class
+
+	internal state
+
+	logic that acts on that state (asynchronously)
+
+	IO interface
+
+		signal (interrupt)
+			triggers computation?
+			everything else stops
+
+		read/write asynchronous
+
+		blocking call (function exec)
+
+		stream in/out
+
+	every module has a "main"
+		starts executing on startup
+	every other interface is disabled by default
+		main has to explicitly enable it
+	all other interface functions execute in parallel with main
+	code must explicitly deal with race conditions
+
+	modules can instantiate sub-modules
+		(easy way for more parallelism)
+
+
+module memory model
+
+
+	pipeline as the main composition mechanism for dynamic memory
+
+	core i32array
+	{
+		i32: x; 
+
+		stream read(i32: index, i32: result) -> value(i32: index, i32: result)
+		{
+			match(read)
+			{
+				result: value(null, result);
+				index: 
+				{
+					if(index == 0)
+						value(null, x);
+					else
+						value(index - 1, null);
+				}
+			}
+
+		}
+		stream write(i32: index, i32: value) -> write_pass(i32: index, i32: value)
+		{
+			if(index == 0)
+				x = value;
+			else
+				write_pass(index-1, value);
+		}
+	}
+
+	new pipeline my_array
+	{
+		i32array:a;
+		i32array:b;
+
+		expose read.a;
+		expose write.a;
+
+		expose value.b;
+
+		write_pass.a -> write.b;
+		value.a -> read.b;
+
+	}; 
+
+	->(a -> b)->
+
+	pipeline my_array
+	{
+		i32array:c;
+
+		expose read.my_array;
+		expose write.my_array;
+
+		expose value.c;
+
+		value.my_array -> read.c;
+		write_pass.my_array -> write.c;
+	};
+
+	keyword: "shunt"
+		shunt read->value; 
+
+	//x == my_array[2]
+
+	x = read(3,null).my_array.value(,result);
+
+	ident.value() //terminal value
+
+	value().ident //that's a statement
+
+	write(3, 7).my_array;
+
+
+
+
+
+
+	array:
+
+
+
+
+
+
+module architecture
+
+
+	all modules execute in parallel (hw or sw)
+	every top level module becomes a core
+		each core has its own memory 
+		meaning, sub-modules can use variables from top module (in same memory)
+
+
+
+
+
+
+
+core cpu0
+{
+	//internal state
+	int x;
+
+	//submodule instantiation
+
+
+	//main (can never return nor receive arguments; upon return, core is de-scheduled)
+	main
+	{
+
+	}
+
+
+	//IO interface
+		//signal (interrupt)
+		//when called externally, all other functions are paused (if enabled)
+			//signal can check who triggered it (and possibly many at same time)
+			//use core name as ID (see source match below)
+		signal
+		{
+
+		}
+			
+		//read/write asynchronous
+
+		//blocking call (function exec)
+
+		//stream in/out
+		
+}
+
+sigen()	//enables interrupts
+sigdis() //disables interrupts
+
+//source is a keyword that returns a list of callers to the function, if function supports it
+//signal must always support source
+
+source
+
+match source 
+{
+	cpu0: ...
+	cpu0 | cpu1: ...
+	cpu1 & cpu0: ...
+};
+
+
+
+
+
+
+
+
+
+
+	
+

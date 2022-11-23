@@ -1,0 +1,33 @@
+core cpu0
+{
+    // MAIN core
+    i32 counter;
+    i32 dead;
+
+    i32 trigger_time;
+    i32 num_triggers;
+    i32 max_triggers;
+
+    main
+    {
+        sigen;
+        counter = 0;
+        trigger_time = 15;
+        max_triggers = 5;
+        num_triggers = 0;
+
+        // prints Main_Core_Initialized;
+
+        while (num_triggers < max_triggers)
+        {
+            while (counter < trigger_time)
+            {
+                counter = counter + 1;
+            };
+            print counter;
+            counter = 0;
+            num_triggers = num_triggers + 1;
+        };
+        halt;        
+    }
+}

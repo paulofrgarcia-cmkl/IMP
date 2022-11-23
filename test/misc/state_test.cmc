@@ -1,0 +1,65 @@
+core cpu0
+{
+    i32 state;
+    main
+    {
+        sigen;
+        i32 counter;
+        i32 dead;
+
+        state = 0;
+        dead = 50;
+        counter = 0;
+
+        while(counter < dead)
+        {
+            counter = counter + 1;
+            prints idle;
+        };
+        sigdis;
+    }
+
+    signal
+    {
+        match source
+        {
+            cpu1:
+            {
+                state = state + 1;
+                print state;
+                if (state > 3)
+                {
+                    state = 0;
+                };
+            }
+        };
+    }
+}
+
+core cpu1
+{
+    i32 counter;
+    i32 trigger_time;
+    i32 num_triggers;
+    i32 max_triggers;
+
+    main
+    {
+        counter = 0;
+        trigger_time = 5;
+        num_triggers = 0;
+        max_triggers = 20;
+
+        while (num_triggers < max_triggers)
+        {
+            while (counter < trigger_time)
+            {
+                counter = counter + 1;
+            };
+            trigger cpu0;
+            counter = 0;
+            num_triggers = num_triggers + 1;
+        };
+        prints button_disabled;
+    }
+}
